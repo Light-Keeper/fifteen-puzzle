@@ -36,7 +36,7 @@ Look into [taskfile.yml](./taskfile.yml) for the available commands.
 
 ## Takeaways
 
-1. [Slint](https://slint.dev) Slint is a nice tradefoff between a full blown html/css-like frameworks and pure native solutions.
+1. [Slint](https://slint.dev) is a nice tradefoff between a full blown html/css-like frameworks and pure native solutions.
    UI is easy to update as features are added, but it does not provide a lot of customization options. Good for "any UI will do" kind of projects.
 
 2. Resulting binary is quite small compared to Electron or Qt, but not as small as I'd imagine (10-20Mb).
