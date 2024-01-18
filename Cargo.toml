@@ -1,0 +1,15 @@
+[package]
+name = "fifteen-puzzle"
+version = "0.1.0"
+authors = ["Vadim <vadik.ya@gmail.com>"]
+edition = "2021"
+build = "build.rs"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+slint = "1.0"
+rand = "0.8.5"
+
+[build-dependencies]
+slint-build = "1.0"

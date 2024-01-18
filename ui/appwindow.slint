@@ -1,0 +1,230 @@
+import { Button, VerticalBox , HorizontalBox, GridBox, CheckBox} from "std-widgets.slint";
+
+struct GameButton {
+    location: int,
+    actionable: bool,
+    label: string
+}
+
+component GameButtonView {
+    in property <bool> gray-out;
+    in property <length> box-size;
+    in property <GameButton> button;
+    callback click();
+
+    x: Math.mod(button.location, 4) * box-size + 4px;
+    y: Math.floor(button.location / 4) * box-size + 4px;
+    width: box-size - 8px;
+    height: box-size - 8px;
+
+    animate x, y { duration: 100ms; }
+
+    touch := TouchArea {
+        mouse-cursor: button.actionable ? pointer : default;        
+        clicked => {
+            if (button.actionable) {
+                click();
+            }
+        }
+
+        Rectangle {
+            background: touch.has-hover && button.actionable ? lightseagreen : button.actionable ? lightblue: gray-out ? lightgray : lightblue;
+            animate background {
+                duration: 50ms;     
+            }
+
+            border-radius: 5px;
+            
+            drop-shadow-blur: 2px;
+            drop-shadow-offset-x: 1px;
+            drop-shadow-offset-y: 1px;
+            drop-shadow-color: rgba(0, 0, 0, 0.5);
+
+            VerticalLayout {
+                alignment: center;
+                HorizontalLayout {
+                    alignment: center;
+                    Text {
+                        text: button.label;
+                        font-size: 26px;
+                        font-weight: 900;
+                    }
+                }        
+            }
+        }    
+    }
+}
+
+component Scene inherits Rectangle {
+    in property <[GameButton]> board;
+    in property <bool> gray-out;
+    callback click(int);
+
+    property <length> box-size: Math.min(self.width, self.height) / 4;
+
+    Rectangle {
+        width: Math.min(parent.width, parent.height);
+        height: Math.min(parent.width, parent.height);
+
+        GameButtonView { button: board[0];  box-size: box-size; click => { click(0); } gray-out: gray-out; }        
+        GameButtonView { button: board[1];  box-size: box-size; click => { click(1); } gray-out: gray-out; }        
+        GameButtonView { button: board[2];  box-size: box-size; click => { click(2); } gray-out: gray-out; }        
+        GameButtonView { button: board[3];  box-size: box-size; click => { click(3); } gray-out: gray-out; }        
+        GameButtonView { button: board[4];  box-size: box-size; click => { click(4); } gray-out: gray-out; }        
+        GameButtonView { button: board[5];  box-size: box-size; click => { click(5); } gray-out: gray-out; }        
+        GameButtonView { button: board[6];  box-size: box-size; click => { click(6); } gray-out: gray-out; }        
+        GameButtonView { button: board[7];  box-size: box-size; click => { click(7); } gray-out: gray-out; }        
+        GameButtonView { button: board[8];  box-size: box-size; click => { click(8); } gray-out: gray-out; }        
+        GameButtonView { button: board[9];  box-size: box-size; click => { click(9); } gray-out: gray-out; }        
+        GameButtonView { button: board[10];  box-size: box-size; click => { click(10); } gray-out: gray-out; }        
+        GameButtonView { button: board[11];  box-size: box-size; click => { click(11); } gray-out: gray-out; }        
+        GameButtonView { button: board[12];  box-size: box-size; click => { click(12); } gray-out: gray-out; }        
+        GameButtonView { button: board[13];  box-size: box-size; click => { click(13); } gray-out: gray-out; }        
+        GameButtonView { button: board[14];  box-size: box-size; click => { click(14); } gray-out: gray-out; }        
+    }
+}
+
+component TimingInfo {
+    in property <int> seconds;
+
+    property <int> h0: Math.floor(seconds / 36000);
+    property <int> h1: Math.mod(Math.floor(seconds / 3600), 10);
+    property <int> m0: Math.mod(Math.floor(seconds / 600), 6);
+    property <int> m1: Math.mod(Math.floor(seconds / 60), 10);
+    property <int> s0: Math.mod(Math.floor(seconds / 10), 6);
+    property <int> s1: Math.mod(seconds, 10);
+
+    property <string> time: "" + h0 + h1 + ":" + m0 + m1 + ":" + s0 + s1;
+
+    Text {
+        color: #455;
+        text: time;
+        font-size: 26px;
+        font-weight: 900;
+    }
+}
+
+component  MovesInfo {
+    in property <int> moves;   
+    Text {
+        color: #455;
+        text: "Moves: " + moves;
+        font-size: 26px;
+        font-weight: 900;
+    }
+}
+
+component Controls inherits Rectangle {
+    in-out property <int> moves;
+    in-out property <int> seconds; 
+    callback start-new-game();
+    in-out property <bool> gray-out;
+
+    width: 200px;
+    VerticalBox {
+        alignment: start;
+        Button {
+            text: "Start New Game";
+            height: 50px;
+            primary: true;
+            clicked => {
+                start-new-game()
+            }
+        }
+
+        CheckBox {
+            text: "Gray out non-actionable items";
+            checked: gray-out;
+            toggled => {
+                gray-out = !gray-out;
+            }
+        }
+
+        Rectangle {
+            height: 50px;
+        }
+
+        TimingInfo { seconds: seconds; }
+        MovesInfo { moves: moves; }
+
+    }
+}
+
+export component AppWindow inherits Window {   
+    preferred-height:   400px;
+    preferred-width:    600px;
+    default-font-weight: 400;
+    default-font-size:  14px;
+
+    title: "Fifeen puzzle";
+
+    callback start-new-game();
+    callback click-item(int);
+    callback key-pressed(string, bool);
+    
+    in-out property <int> moves: 0;
+    in-out property <int> seconds: 0;
+    in-out property <[int]> locations: [13, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 15, 14];
+
+    property <bool> gray-out: true;
+    property <int> active-row: Math.floor(locations[0] / 4);
+    property <int> active-col: Math.mod(locations[0], 4);
+
+    property <[int]> rows: [
+        Math.floor(locations[0] / 4), Math.floor(locations[1] / 4),  Math.floor(locations[2] / 4),  Math.floor(locations[3] / 4), 
+        Math.floor(locations[4] / 4), Math.floor(locations[5] / 4),  Math.floor(locations[6] / 4),  Math.floor(locations[7] / 4), 
+        Math.floor(locations[8] / 4), Math.floor(locations[9] / 4),  Math.floor(locations[10] / 4),  Math.floor(locations[11] / 4), 
+        Math.floor(locations[12] / 4), Math.floor(locations[13] / 4),  Math.floor(locations[14] / 4),  Math.floor(locations[15] / 4) 
+    ];
+
+    property <[int]> cols: [
+        Math.mod(locations[0], 4), Math.mod(locations[1], 4),  Math.mod(locations[2], 4),  Math.mod(locations[3], 4), 
+        Math.mod(locations[4], 4), Math.mod(locations[5], 4),  Math.mod(locations[6], 4),  Math.mod(locations[7], 4), 
+        Math.mod(locations[8], 4), Math.mod(locations[9], 4),  Math.mod(locations[10], 4),  Math.mod(locations[11], 4), 
+        Math.mod(locations[12], 4), Math.mod(locations[13], 4),  Math.mod(locations[14], 4),  Math.mod(locations[15], 4)
+    ];
+    
+    property <[GameButton]> board: [
+        {location: locations[1], actionable: rows[1] == active-row || cols[1] == active-col, label: "1"},
+        {location: locations[2], actionable: rows[2] == active-row || cols[2] == active-col, label: "2"},
+        {location: locations[3], actionable: rows[3] == active-row || cols[3] == active-col, label: "3"},
+        {location: locations[4], actionable: rows[4] == active-row || cols[4] == active-col, label: "4"},
+        {location: locations[5], actionable: rows[5] == active-row || cols[5] == active-col, label: "5"},
+        {location: locations[6], actionable: rows[6] == active-row || cols[6] == active-col, label: "6"},
+        {location: locations[7], actionable: rows[7] == active-row || cols[7] == active-col, label: "7"},
+        {location: locations[8], actionable: rows[8] == active-row || cols[8] == active-col, label: "8"},
+        {location: locations[9], actionable: rows[9] == active-row || cols[9] == active-col, label: "9"},
+        {location: locations[10], actionable: rows[10] == active-row || cols[10] == active-col, label: "10"},
+        {location: locations[11], actionable: rows[11] == active-row || cols[11] == active-col, label: "11"},
+        {location: locations[12], actionable: rows[12] == active-row || cols[12] == active-col, label: "12"},
+        {location: locations[13], actionable: rows[13] == active-row || cols[13] == active-col, label: "13"},
+        {location: locations[14], actionable: rows[14] == active-row || cols[14] == active-col, label: "14"},
+        {location: locations[15], actionable: rows[15] == active-row || cols[15] == active-col, label: "15"},
+    ];
+
+    FocusScope {
+        key-pressed(key) => {
+            key-pressed(key.text, key.modifiers.shift);
+            accept
+        }
+
+        HorizontalBox {
+            Controls {
+                moves: moves;
+                seconds: seconds;
+                gray-out <=> gray-out;
+                start-new-game => {
+                    start-new-game();
+                }
+            }
+
+            Scene {
+                click(loc) => { 
+                    click-item(loc + 1);
+                }
+                gray-out: gray-out;
+                board: board;
+            }
+        }
+    }
+}
