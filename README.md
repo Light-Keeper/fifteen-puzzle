@@ -10,7 +10,25 @@ This is a small pet project to learn [Slint](https://slint.dev) and [Rust](https
 
 ## Usage
 
-Just download the binary from Releases and run it.
+I don't provide binaries (yet), so you have to build it yourself:
+
+```bash
+gh repo clone Light-Keeper/fifteen-puzzle
+cd fifteen-puzzle
+cargo build --release
+```
+
+Then you can run it:
+
+```bash
+./target/release/fifteen-puzzle
+```
+
+alternatively you can run the project directly with [taskfile](https://taskfile.dev) (if you have it installed):
+
+```bash
+task run
+```
 
 ## Development
 
