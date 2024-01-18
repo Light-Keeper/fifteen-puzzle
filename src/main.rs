@@ -100,8 +100,6 @@ fn main() -> Result<(), slint::PlatformError> {
         const LEFT: u32 = 63234;
         const RIGHT: u32 = 63235;
 
-        println!("{} {}", cmd as u32, with_shift);
-
         match (cmd as u32, with_shift) {
             (UP, false) => {
                 if zero_r < 3 {
