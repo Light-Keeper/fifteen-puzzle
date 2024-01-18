@@ -40,7 +40,7 @@ Look into [taskfile.yml](./taskfile.yml) for the available commands.
    UI is easy to update as features are added, but it does not provide a lot of customization options. Good for "any UI will do" kind of projects.
 
 2. Resulting binary is quite small compared to Electron or Qt, but not as small as I'd imagine (10-20Mb).
-3. Memory footprint is or runnig app is quite small (20-30Mb).
+3. Memory footprint of a runnig app is quite small (20-30Mb).
 
 4. Rust's compiler is too restrictive. It's a good thing in the long run - the code is prepared for the worst case scenario. But it makes prototyping timeconsuming.
 
